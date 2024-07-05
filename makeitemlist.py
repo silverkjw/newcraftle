@@ -1,33 +1,12 @@
 import json
 import os
-import math
 import numpy as np
+from tags import tagDict
 
 recipeLocation = "./recipes/" #제작법 폴더
 
 recipeNameList = os.listdir(recipeLocation) #제작법 목록
 
-tagDict = {} #태그 이름을 key, 태그에 해당되는 아이템 이름의 리스트를 value로 갖는다
-
-tagDict['minecraft:acacia_logs'] = ['acacia_log', 'acacia_wood', 'stripped_acacia_log', 'stripped_acacia_wood']
-tagDict['minecraft:bamboo_blocks'] = ['bamboo_block', 'stripped_bamboo_block']
-tagDict['minecraft:birch_logs'] = ['birch_log', 'birch_wood', 'stripped_birch_log', 'stripped_birch_wood']
-tagDict['minecraft:cherry_logs'] = ['cherry_log', 'cherry_wood', 'stripped_cherry_log', 'stripped_cherry_wood']
-tagDict['minecraft:coals'] = ['coal', 'charcoal']
-tagDict['minecraft:crimson_stems'] = ['crimson_stem', 'stripped_crimson_stem', 'crimson_hyphae', 'stripped_crimson_hyphae']
-tagDict['minecraft:dark_oak_logs'] = ['dark_oak_log', 'dark_oak_wood', 'stripped_dark_oak_log', 'stripped_dark_oak_wood']
-tagDict['minecraft:jungle_logs'] = ['jungle_log', 'jungle_wood', 'stripped_jungle_log', 'stripped_jungle_wood']
-tagDict['minecraft:mangrove_logs'] = ['mangrove_log', 'mangrove_wood', 'stripped_mangrove_log', 'stripped_mangrove_wood']
-tagDict['minecraft:oak_logs'] = ['oak_log', 'oak_wood', 'stripped_oak_log', 'stripped_oak_wood']
-tagDict['minecraft:planks'] = ['oak_planks', 'spruce_planks', 'birch_planks', 'jungle_planks', 'acacia_planks', 'dark_oak_planks']
-tagDict['minecraft:soul_fire_base_blocks'] = ['soul_sand', 'soul_soil']
-tagDict['minecraft:spruce_logs'] = ['spruce_log', 'spruce_wood', 'stripped_spruce_log', 'stripped_spruce_wood']
-tagDict['minecraft:stone_crafting_materials'] = ['cobblestone', 'blackstone', 'cobbled_deepslate']
-tagDict['minecraft:stone_tool_materials'] = ['cobblestone', 'blackstone', 'cobbled_deepslate']
-tagDict['minecraft:warped_stems'] = ['warped_stem', 'stripped_warped_stem', 'warped_hyphae', 'stripped_warped_hyphae']
-tagDict['minecraft:wooden_slabs'] = ['oak_slab', 'spruce_slab', 'birch_slab', 'jungle_slab', 'acacia_slab', 'dark_oak_slab', 'crimson_slab', 'warped_slab', 'mangrove_slab', 'bamboo_slab', 'cherry_slab']
-tagDict['minecraft:wool'] = ['white_wool', 'orange_wool', 'magenta_wool', 'light_blue_wool', 'yellow_wool', 'lime_wool', 'pink_wool', 'gray_wool', 'light_gray_wool', 'cyan_wool', 'purple_wool', 'blue_wool', 'brown_wool', 'green_wool', 'red_wool', 'black_wool']
-tagDict['minecraft:logs'] = tagDict['minecraft:acacia_logs'] + tagDict['minecraft:birch_logs'] + tagDict['minecraft:cherry_logs'] + tagDict['minecraft:crimson_stems'] + tagDict['minecraft:dark_oak_logs'] + tagDict['minecraft:jungle_logs'] + tagDict['minecraft:mangrove_logs'] + tagDict['minecraft:oak_logs'] + tagDict['minecraft:spruce_logs'] + tagDict['minecraft:warped_stems']
 
 itemCountDict = {}
 
@@ -135,18 +114,36 @@ for recipeName in recipeNameList:
                     print(result, '\n',ingredient)
                     assert()
 
+
+for key in list(itemCountDict.keys()):
+    if "_planks" in key or "_log" in key or "_stem" in key: #나무의 경우 9종류
+        itemCountDict[key] /= 3 #좀 줄이기
+
+    elif "_dye" in key: #염료의 경우 16종류
+        itemCountDict[key] /= 4 #좀 줄이기
+
+    elif "_wool" in key: #양털의 경우 16종류
+        itemCountDict[key] /= 4 #좀 줄이기
+
+    elif "_copper" in key or "copper_" in key or "honeycomb" in key: #구리 시리즈 견제
+        itemCountDict[key] /= 2
+
+    elif "glass" in key or "terracotta" in key or key == "sand" or key == "gravel": #염색 가능한 것들
+        itemCountDict[key] /= 2
+ 
 itemCountDict = dict(sorted(itemCountDict.items(), key=lambda x: x[1])) #value 기준 정렬
 
 print(itemCountDict)
+
 #print(len(itemCountDict))
 
-def firstItems(count:int): #제곱근을 가중치로 해서 아이템을 count개 선정
-    # value의 제곱근 계산
-    sqrt_values = {k: v for k, v in itemCountDict.items()}
+def firstItems(count:int): #제곱을 가중치로 해서 아이템을 count개 선정
+    # value 계산
+    values = {k: v for k, v in itemCountDict.items()}
 
-    # 제곱근 값에 비례한 가중치 계산
-    total_sqrt = sum(sqrt_values.values())
-    weights = {k: v / total_sqrt for k, v in sqrt_values.items()}
+    #value 값에 비례한 가중치 계산
+    total = sum(values.values())
+    weights = {k: v / total for k, v in values.items()}
 
     # 가중치를 기반으로 key를 중복 없이 16개 뽑기
     keys = list(weights.keys())
@@ -157,5 +154,3 @@ def firstItems(count:int): #제곱근을 가중치로 해서 아이템을 count�
     return(selected_keys)
 
 print(firstItems(16))
-
-    
