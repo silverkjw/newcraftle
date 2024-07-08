@@ -8,18 +8,17 @@ recipeLocation = "./testrecipes/" #제작법 폴더
 recipeNameList = os.listdir(recipeLocation) #제작법 목록
 
 craftTable = \
-    [['beetroot','beetroot','bowl'],\
-     ['','',''],\
-     ['beetroot','beetroot','beetroot']]
+    [['','iron_ingot',''],\
+     ['','redstone',''],\
+     ['','iron_ingot','']]
 
 #      [['0,0','0,1','0,2'],\
 #      ['1,0','1,1','2,1'],\
 #      ['2,0','2,1','2,2']]
 
 #shaped 알고리즘
-# 1. 제작대의 조합법의 크기 분석 (Ex, 나무 다락문 -> 3*2)
+# 1. 제작대의 조합법의 크기 분석 (Ex, 나무 다락문 -> 3*2), 자르기
 # 2. json 파일의 조합법의 크기 분석, 일치할시 통과
-# 2.5. 제작대의 조합법에서 크기 부분만 떼오기
 # 3. 키를 for로 돌려서, 각각의 키가 전부 일치하는지 확인
 # 4. 공백도 일치하는지 확인
 # 5. 좌우대칭으로 한번 더
@@ -27,16 +26,80 @@ craftTable = \
 
 def checkCraft(craftTable:list):
 
+    # 1. 제작대의 조합법의 크기 분석 (Ex, 나무 다락문 -> 3*2)
+    # 좌우 상하 최댓값 계산 각각 2 0, 2 0에서 스타트
+    xMin = 2
+    xMax = 0
+    yMin = 2
+    yMax = 0
+
+    for y in range(3):
+        for x in range(3):
+            if craftTable[y][x] != '': #있다면
+                xMin = min(xMin, x)
+                yMin = min(yMin, y)
+                xMax = max(xMax, x)
+                yMax = max(yMax, y)
+                pass
+    
+
+    print(xMin, xMax, yMin, yMax)
+
+    newTable = []
+
+    for y in range(yMin,yMax+1):
+        newTable.append(craftTable[y][xMin:xMax+1])
+
+    print(newTable)
+
+    
+
+
     for recipeName in recipeNameList:
         with open(recipeLocation+recipeName,"r") as f: #json 파일 열기
             json_data = json.load(f) #json 로드
             
             if json_data["type"] == "minecraft:crafting_shaped": #모양이 정해진 
-
+                
+                print()
                 print(recipeName)
-                #print(json_data['key'])
-                print(json_data['pattern'],"\n")
+                print(json_data['key'])
+                print(json_data['pattern'])
 
+                # 2. json 파일의 조합법의 크기 분석, 일치할시 통과
+                xLen = len(json_data['pattern'][0])
+                yLen = len(json_data['pattern'])
+
+                if xLen == xMax - xMin + 1 and yLen == yMax - yMin + 1: #xy 길이 일치한다면
+                    # 3. 키를 for로 돌려서, 각각의 키가 전부 일치하는지 확인
+
+                    goodSetDict = {} #goodSet들 모아둔 Dict
+                    
+                    for key in list(json_data['key'].keys()): #각각의 키에 대해
+
+                        goodSetDict[key] = set([]) #가능한 아이템 집합
+
+                        if type(json_data['key'][key]) == list: #만약 리스트라면
+                            for k in json_data['key'][key]:
+                                if 'item' in k:
+                                    goodSetDict[key].add(k['item'].replace("minecraft:","")) #싹다 집합에 추가
+                                else:
+                                    print(recipeName)
+                                    assert()
+                        
+                        elif 'tag' in json_data['key'][key]: #tag라면
+                            goodSetDict[key].update(tagDict[json_data['key'][key]['tag']])
+
+                        elif 'item' in json_data['key'][key]:
+                            goodSetDict[key].add(json_data['key'][key]['item'].replace("minecraft:",""))
+
+                        for row in json_data['pattern']: #패턴 한줄 따오기
+                            pass
+
+                    print(goodSetDict)
+                
+                else: #일치X 탈락
+                    pass 
                 pass    
 
             else: #모양이 정해지지 않은 경우
