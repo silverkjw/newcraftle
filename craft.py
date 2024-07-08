@@ -2,18 +2,28 @@
 
 import os
 import json
-import numpy as np
 from tags import tagDict
 
-recipeLocation = "./recipes/" #제작법 폴더
+recipeLocation = "./testrecipes/" #제작법 폴더
 recipeNameList = os.listdir(recipeLocation) #제작법 목록
 
 craftTable = \
-    [['','red_dye',''],\
-     ['','yellow_dye',''],\
-     ['','','']]
+    [['beetroot','beetroot','bowl'],\
+     ['','',''],\
+     ['beetroot','beetroot','beetroot']]
 
+#      [['0,0','0,1','0,2'],\
+#      ['1,0','1,1','2,1'],\
+#      ['2,0','2,1','2,2']]
 
+#shaped 알고리즘
+# 1. 제작대의 조합법의 크기 분석 (Ex, 나무 다락문 -> 3*2)
+# 2. json 파일의 조합법의 크기 분석, 일치할시 통과
+# 2.5. 제작대의 조합법에서 크기 부분만 떼오기
+# 3. 키를 for로 돌려서, 각각의 키가 전부 일치하는지 확인
+# 4. 공백도 일치하는지 확인
+# 5. 좌우대칭으로 한번 더
+# 6. 완
 
 def checkCraft(craftTable:list):
 
@@ -21,8 +31,13 @@ def checkCraft(craftTable:list):
         with open(recipeLocation+recipeName,"r") as f: #json 파일 열기
             json_data = json.load(f) #json 로드
             
-            if json_data["type"] == "minecraft:crafting_shaped": #모양이 정해진 경우
-                pass
+            if json_data["type"] == "minecraft:crafting_shaped": #모양이 정해진 
+
+                print(recipeName)
+                #print(json_data['key'])
+                print(json_data['pattern'],"\n")
+
+                pass    
 
             else: #모양이 정해지지 않은 경우
                 #print(json_data['ingredients'])
