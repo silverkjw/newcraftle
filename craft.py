@@ -8,9 +8,12 @@ from tags import tagDict
 recipeLocation = "./recipes/" #제작법 폴더
 recipeNameList = os.listdir(recipeLocation) #제작법 목록
 
-craftTable = [['','',''],['','',''],['','','']]
+craftTable = \
+    [['','','diamond_block'],\
+     ['','',''],\
+     ['','','']]
 
-craftTable[2][2] = 'iron_ingot'
+
 
 def checkCraft(craftTable:list):
 
@@ -29,33 +32,60 @@ def checkCraft(craftTable:list):
                 for row in craftTable:
                     for craftItem in row: 
                         if craftItem != '': #있다면
-                            ingredientList.append[craftItem] #사용한 재료 목록, minecraft: 빼고 저장
+                            ingredientList.append(craftItem) #사용한 재료 목록, minecraft: 빼고 저장
+
+                success = True #성공 여부
 
                 for ingredient in json_data['ingredients']:
 
                     if type(ingredient) == list:
-                        success = False
+
+                        listsuccess = False
 
                         for i in ingredient: 
                             if 'item' in i:
                                 if i['item'].replace("minecraft:","") in ingredientList: #제작법에 있는 아이템이라면
-                                    success = True
-                                    ingredientList.pop(i['item'].replace("minecraft:",""))
+                                    listsuccess = True
+                                    ingredientList.remove(i['item'].replace("minecraft:",""))
+
                                     break
+
                             else:
-                                print(recipeName)
+                                print(recipeName) #오류
                                 assert()
                         
-                        if success is False:
-                            pass
+                        if listsuccess is False: #필요한 재료 X
+                            success = False
+                            break
 
                     elif 'tag' in ingredient:
-                        print(recipeName)
-                    elif 'item' in ingredient:
 
-                pass
+                        listsuccess = False
+
+                        for i in tagDict[ingredient['tag']]: #tag 리스트의 모든 것에 대해
+                            if i in ingredientList: #제작법에 있는 아이템이라면
+                                listsuccess = True
+                                ingredientList.remove(i['item'].replace("minecraft:",""))
+                                break
+                        
+                        if listsuccess is False: #필요한 재료 X
+                            success = False
+                            break
+
+                    elif 'item' in ingredient:
+                        if ingredient['item'].replace("minecraft:","") in ingredientList: #제작법에 있는 아이템이라면
+                            ingredientList.remove(ingredient['item'].replace("minecraft:",""))
+
+                        else: #필요한 재료 X
+                            success = False
+                            break
+                        
+                if len(ingredientList) == 0 and success == True: #모든 재료 다 사용, 부족한 재료 X
+                    return recipeName #레시피 이름 반환
+
+            pass
     return
 
-checkCraft(craftTable)
+print(checkCraft(craftTable))
 
 
