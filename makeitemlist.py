@@ -75,8 +75,11 @@ for recipeName in recipeNameList:
                 #print(ingredient)
 
                 if  type(ingredient) == list: #리스트인 경우
+
+                    alpha = 1/len(ingredient) #재료 목록 길이로 나누기, 예를 들어 5개 중 하나를 써야 한다면 각각 0.2씩 더한다
+                    
                     for i in ingredient: #
-                        if "tag" in i: #tag인 경우
+                        if "tag" in i: #tag인 경우(없는듯)
                             for itemName in tagDict[i["tag"]]: #모든 아이템에 대해
                                 if itemName in itemCountDict: #이미 나온 아이템
                                     itemCountDict[itemName] += 1 #1 더하기
@@ -87,28 +90,33 @@ for recipeName in recipeNameList:
                             itemName = i["item"].replace("minecraft:","") #minecraft: 제거
 
                             if itemName in itemCountDict: #이미 나온 아이템
-                                itemCountDict[itemName] += 1 #1 더하기
+                                itemCountDict[itemName] += alpha #alpha 더하기
                             else: #처음 나온 아이템
-                                itemCountDict[itemName] = 1 #1로 시작
+                                itemCountDict[itemName] = alpha #alpha 시작
                         else: #예외
                             print(recipeName)
                             print(result, '\n',ingredient)
                             assert()
                     
                 elif "tag" in ingredient: #tag인 경우
+
+                    alpha = 1/len(tagDict[ingredient["tag"]])
+
                     for itemName in tagDict[ingredient["tag"]]: #모든 아이템에 대해
                         if itemName in itemCountDict: #이미 나온 아이템
-                            itemCountDict[itemName] += 1 #1 더하기
+                            itemCountDict[itemName] += alpha #1 더하기
                         else: #처음 나온 아이템
-                            itemCountDict[itemName] = 1 #1로 시작
+                            itemCountDict[itemName] = alpha #1로 시작
 
                 elif "item" in ingredient: #item인 경우
+
                     itemName = ingredient["item"].replace("minecraft:","") #minecraft: 제거
 
                     if itemName in itemCountDict: #이미 나온 아이템
                         itemCountDict[itemName] += 1 #1 더하기
                     else: #처음 나온 아이템
                         itemCountDict[itemName] = 1 #1로 시작
+                        
                 else: #예외
                     print(recipeName)
                     print(result, '\n',ingredient)
@@ -133,8 +141,6 @@ for key in list(itemCountDict.keys()):
  
 itemCountDict = dict(sorted(itemCountDict.items(), key=lambda x: x[1])) #value 기준 정렬
 
-print(itemCountDict)
-
 #print(len(itemCountDict))
 
 def firstItems(count:int): #제곱을 가중치로 해서 아이템을 count개 선정
@@ -153,4 +159,4 @@ def firstItems(count:int): #제곱을 가중치로 해서 아이템을 count개 
 
     return(selected_keys)
 
-print(firstItems(16))
+#print(firstItems(16))

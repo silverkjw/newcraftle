@@ -9,9 +9,9 @@ recipeLocation = "./recipes/" #제작법 폴더
 recipeNameList = os.listdir(recipeLocation) #제작법 목록
 
 craftTable = \
-    [['','egg',''],\
-     ['pumpkin','fuckyou',''],\
-     ['','','sugar']]
+    [['','red_dye',''],\
+     ['','yellow_dye',''],\
+     ['','','']]
 
 
 
