@@ -9,9 +9,9 @@ recipeLocation = "./recipes/" #제작법 폴더
 recipeNameList = os.listdir(recipeLocation) #제작법 목록
 
 craftTable = \
-    [['','','diamond_block'],\
-     ['','',''],\
-     ['','','']]
+    [['','egg',''],\
+     ['pumpkin','fuckyou',''],\
+     ['','','sugar']]
 
 
 
@@ -84,8 +84,7 @@ def checkCraft(craftTable:list):
                     return recipeName #레시피 이름 반환
 
             pass
-    return
-
+    return False
 print(checkCraft(craftTable))
 
 
