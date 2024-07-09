@@ -26,6 +26,14 @@ craftTable = \
 
 def checkCraft(craftTable:list):
 
+    #재료 목록 원본 만들기
+    firstIngredientList = []
+
+    for row in craftTable:
+        for craftItem in row: 
+            if craftItem != '': #있다면
+                firstIngredientList.append(craftItem) #사용한 재료 목록, minecraft: 빼고 저장
+
     # 1. 제작대의 조합법의 크기 분석 (Ex, 나무 다락문 -> 3*2)
     # 좌우 상하 최댓값 계산 각각 2 0, 2 0에서 스타트
     xMin = 2
@@ -137,13 +145,8 @@ def checkCraft(craftTable:list):
             else: #모양이 정해지지 않은 경우
                 #print(json_data['ingredients'])
                 
-                ingredientList = []
-
-                for row in craftTable:
-                    for craftItem in row: 
-                        if craftItem != '': #있다면
-                            ingredientList.append(craftItem) #사용한 재료 목록, minecraft: 빼고 저장
-
+                ingredientList = firstIngredientList.copy() #재료 목록 불러오기
+ 
                 success = True #성공 여부
 
                 for ingredient in json_data['ingredients']:

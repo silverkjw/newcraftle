@@ -25,3 +25,6 @@ for json in filelist:
         os.remove("./recipes/"+json)
                     
 print("DONE")
+
+
+
