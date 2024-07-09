@@ -4,17 +4,21 @@ body
     height: 100vh;
     background-color: #f0f0f0;
     justify-content: center; /* 중앙 정렬 */
+    flex-direction: column;
 }
 
 .craftContainer
 {
     display: flex;
-    gap: 100px;
+    gap: 150px;
+    margin-bottom: 50px;
+    justify-content: center;
 }
 
 .blocksContainer
 {
     display: flex;
+    justify-content: center;
 }
 
 .craftTable
@@ -40,6 +44,7 @@ body
 .result
 {
     display: flex;
+    margin-top: 105px;
     gap: 10px;
     grid-template-columns: repeat(1, 100px);
 }
