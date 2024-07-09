@@ -4,13 +4,13 @@ import os
 import json
 from tags import tagDict
 
-recipeLocation = "./testrecipes/" #제작법 폴더
+recipeLocation = "./recipes/" #제작법 폴더
 recipeNameList = os.listdir(recipeLocation) #제작법 목록
 
 craftTable = \
-    [['','iron_ingot',''],\
-     ['','redstone',''],\
-     ['','iron_ingot','']]
+    [['cobblestone','cobblestone','cobblestone'],\
+     ['quartz','redstone','redstone'],\
+     ['cobblestone','cobblestone','cobblestone']]
 
 #      [['0,0','0,1','0,2'],\
 #      ['1,0','1,1','2,1'],\
@@ -43,17 +43,14 @@ def checkCraft(craftTable:list):
                 pass
     
 
-    print(xMin, xMax, yMin, yMax)
+    #print(xMin, xMax, yMin, yMax)
 
     newTable = []
 
     for y in range(yMin,yMax+1):
         newTable.append(craftTable[y][xMin:xMax+1])
 
-    print(newTable)
-
-    
-
+    craftTable = newTable #필요한 부분만 자르기 완료
 
     for recipeName in recipeNameList:
         with open(recipeLocation+recipeName,"r") as f: #json 파일 열기
@@ -61,10 +58,10 @@ def checkCraft(craftTable:list):
             
             if json_data["type"] == "minecraft:crafting_shaped": #모양이 정해진 
                 
-                print()
-                print(recipeName)
-                print(json_data['key'])
-                print(json_data['pattern'])
+                # print()
+                # print(recipeName)
+                # print(json_data['key'])
+                # print(json_data['pattern'])
 
                 # 2. json 파일의 조합법의 크기 분석, 일치할시 통과
                 xLen = len(json_data['pattern'][0])
@@ -74,7 +71,7 @@ def checkCraft(craftTable:list):
                     # 3. 키를 for로 돌려서, 각각의 키가 전부 일치하는지 확인
 
                     goodSetDict = {} #goodSet들 모아둔 Dict
-                    
+
                     for key in list(json_data['key'].keys()): #각각의 키에 대해
 
                         goodSetDict[key] = set([]) #가능한 아이템 집합
@@ -93,14 +90,49 @@ def checkCraft(craftTable:list):
                         elif 'item' in json_data['key'][key]:
                             goodSetDict[key].add(json_data['key'][key]['item'].replace("minecraft:",""))
 
-                        for row in json_data['pattern']: #패턴 한줄 따오기
-                            pass
+                    goodSetDict[' '] = set(['']) #공백도 검사해야 한다
+                    
+                    #print(goodSetDict)
 
-                    print(goodSetDict)
+                    patternSuccess = True
+
+                    for y, row in enumerate(json_data['pattern']): #패턴 한줄 따오기
+                        for x, k in enumerate(row): #각 문자에 대해
+                            if craftTable[y][x] in goodSetDict[k]: #포함된다면
+                                pass
+                            else: #없다면
+                                patternSuccess = False
+                                break
+                                    
+                        if patternSuccess == False:
+                            break
+                    
+                    if patternSuccess == True:
+                        return recipeName
+                    
+                    else: #아니라면
+
+                        #좌우반전으로 한번 더 검사
+                        patternSuccess = True
+
+                        for y, row in enumerate(json_data['pattern']): #패턴 한줄 따오기
+                            for x, k in enumerate(row): #각 문자에 대해
+                                if craftTable[y][len(craftTable[0])-1-x] in goodSetDict[k]: #포함된다면
+                                    pass
+                                else: #없다면
+                                    patternSuccess = False
+                                    break
+                                        
+                            if patternSuccess == False:
+                                break
+                        
+                        if patternSuccess == True:
+                            return recipeName
+                        else: #최종실패
+                            pass
                 
-                else: #일치X 탈락
+                else: #모양 불일치, 탈락
                     pass 
-                pass    
 
             else: #모양이 정해지지 않은 경우
                 #print(json_data['ingredients'])
@@ -163,6 +195,7 @@ def checkCraft(craftTable:list):
 
             pass
     return False
+
 print(checkCraft(craftTable))
 
 
