@@ -49,15 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-item1 = document.getElementById("item-1")
-
-item1.style.backgroundImage = "url('../itemimage_a-g/acacia_planks.png')"
-
 body = document.querySelector(".body")
 
 const img = new Image(); 
 
-document.body.appendChild(img);
+console.log("고난")
+body.appendChild(img);
 img.src = './itemimage_a-g/acacia_log.png'
 img.width = '50'
 img.style = "position:absolute; left:0px; top:0px;"
@@ -67,7 +64,7 @@ function main(){
 
   for (let i = 0; i < itemList.length; i++) {
     console.log(itemList[i]);
-    
+
     const firstChar = itemList[i][0].toLowerCase();
 
     if (firstChar >= 'a' && firstChar <= 'g') {
