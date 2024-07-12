@@ -8,6 +8,8 @@ var craftTable = [
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  main()
+
   document.getElementById('item-5').addEventListener('click', () => {
     fetch('/run-python')
     .then(response => response.arrayBuffer())
@@ -19,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
       itemList = JSON.parse(JSON.stringify(data, null, 2))
       console.log(itemList)
 
-      main()
+      reset()
+
     })
 
     .catch(error => console.error('Error fetching data:', error));
@@ -48,25 +51,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
           console.log(itemList)
 
-          main()
+          reset()
         })
         .catch(error => console.error('Error fetching data:', error));
   });
 
 });
 
-body = document.querySelector(".body")
+document.addEventListener('mousemove', function(event) {
+  const followImg = document.getElementById('follow-img');
+  followImg.style.left = `${event.clientX}px`;
+  followImg.style.top = `${event.clientY}px`;
+});
 
-const img = new Image(); 
+function showImage() {
+  const followImg = document.getElementById('follow-img');
+  followImg.style.display = 'block';
+}
 
-console.log("고난")
-body.appendChild(img);
-img.src = './itemimage_a-g/acacia_log.png'
-img.width = '50'
-img.style = "position:absolute; left:0px; top:0px;"
+function hideImage() {
+  const followImg = document.getElementById('follow-img');
+  followImg.style.display = 'none';
+}
+
+function changeImageSrc(newSrc) {
+  const followImg = document.getElementById('follow-img');
+  followImg.src = newSrc;
+}
 
 
-function main(){
+function reset(){
 
   for (let i = 0; i < itemList.length; i++) {
     console.log(itemList[i]);
@@ -95,3 +109,15 @@ function main(){
 
   }
 }
+
+function main() {
+
+  changeImageSrc("./itemimage_a-g/acacia_planks.png")
+  showImage()
+  hideImage()
+  showImage()
+
+  return 0; //장식
+
+}
+
