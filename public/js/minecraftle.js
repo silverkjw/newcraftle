@@ -1,9 +1,9 @@
 //작업예정
 
 var craftTable = [
-  ["1", "2", "3"],
-  ["4", "5", "6"],
-  ["7", "8", "9"]
+  ["", "", ""],
+  ["", "", ""],
+  ["", "", ""]
 ];
 
 var handItem = "";
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           console.log(itemList)
 
-          reset()
+          main()
         })
         .catch(error => console.error('Error fetching data:', error));
   });
@@ -74,37 +74,50 @@ function reset(){
   for (let i = 0; i < itemList.length; i++) {
     console.log(itemList[i]);
 
-    const firstChar = itemList[i][0].toLowerCase();
-
-    if (firstChar >= 'a' && firstChar <= 'g') {
-      imagePath = "./itemimage_a-g/";
-    }
-    
-    else if (firstChar >= 'h' && firstChar <= 'z') {
-      imagePath = "./itemimage_h-z/";
-    }
-    
-    else {
-      console.error(); 
-      continue;
-    }
+    makesrc(itemList[i])
 
     //console.log(document.getElementById(`item-${i+1}`))
     //console.log(`${imagePath}${itemList[i]}.png`)
     
     image = document.getElementById(`item-${i+1}`)
 
-    image.style.backgroundImage = `url(${imagePath}${itemList[i]}.png)`
+    image.style.backgroundImage = `url(${makesrc(itemList[i])})`
 
   }
 }
 
-function main() {
+function makesrc(item){
+  const firstChar = itemList[i][0].toLowerCase();
 
-  changeImageSrc("./itemimage_a-g/acacia_log.png")
-
-
-  return 0; //장식
-
+  if (firstChar >= 'a' && firstChar <= 'g') {
+    imagePath = "./itemimage_a-g/";
+  }
+  
+  else if (firstChar >= 'h' && firstChar <= 'z') {
+    imagePath = "./itemimage_h-z/";
+  }
+  
+  else {
+    console.error();
+  }
+  
+  return `${imagePath}${item}.png`
 }
 
+function update(craftTable){
+
+  var number = 1;
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+      cell = document.getElementById(`cell-${number}`)
+      cell.style.backgroundImage = `url(${makesrc(craftTable[i][j])})`
+      number++;
+    }
+  }
+
+  for (let i = 0; i < 9; i++){
+    
+    
+  }
+  
+}
