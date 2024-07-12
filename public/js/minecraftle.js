@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
           itemList = JSON.parse(data)
 
           console.log(itemList)
-          console.log(itemList[0])
 
           main()
         })
@@ -69,8 +68,7 @@ function main(){
   for (let i = 0; i < itemList.length; i++) {
     console.log(itemList[i]);
 
-    const firstChar = itemList[i].toLowerCase();
-
+    const firstChar = itemList[i][0].toLowerCase();
 
     if (firstChar >= 'a' && firstChar <= 'g') {
       imagePath = "./itemimage_a-g/";
