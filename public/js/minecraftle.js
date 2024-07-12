@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('item-6').addEventListener('click', async () => {
 
     filename = "makeitemlist.py";
-    params = [3];
+    params = [18];
 
     fetch('http://localhost:3000/run-python', {
       method: 'POST',
@@ -38,8 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
           const decodedString = decoder.decode(buffer);
           const data = JSON.parse(decodedString);
           
-          console.log(data)
+          itemList = JSON.parse(data)
 
+          console.log(itemList)
+          console.log(itemList[0])
+
+          main()
         })
         .catch(error => console.error('Error fetching data:', error));
   });
@@ -85,5 +89,6 @@ function main(){
     image = document.getElementById(`item-${i+1}`)
 
     image.style.backgroundImage = `url(${imagePath}${itemList[i]}.png)`
+
   }
 }
