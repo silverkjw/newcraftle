@@ -40,7 +40,28 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error fetching data:', error));
   });
 
+// item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
+for (let i = 1; i <= 18; i++) {
+  // 각 요소의 ID를 생성
+  let elementId = 'item-' + i;
+  
+  // 요소를 선택
+  let element = document.getElementById(elementId);
+  
+  // 요소가 존재하면 이벤트 핸들러를 추가
+  if (element) {
+      element.addEventListener('click', function() {
+          grabTable(i);
+      });
+  }
+}
+
 });
+
+  function grabTable(parameter) {
+    handItem = itemList[parameter-1]
+    changeImageSrc()
+  }
 
 document.addEventListener('mousemove', function(event) {
   const followImg = document.getElementById('follow-img');
@@ -70,7 +91,8 @@ function changeImageSrc() { //handItem을 통해 커서 이미지 변경
 
 
 function reset(){
-
+  handItem = ""
+  changeImageSrc()
   for (let i = 0; i < itemList.length; i++) {
     console.log(itemList[i]);
     
