@@ -13,6 +13,7 @@ app.get('/run-python', (req, res) => {
 
     result_02.stdout.on('data', (result)=>{
         console.log(result.toString());
+        res.send(result);
     });
 });
 

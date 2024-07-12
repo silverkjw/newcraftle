@@ -3,15 +3,18 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('item-5').addEventListener('click', () => {
-    fetch('/run-python?param=test')
-      .then(response => response.text())
-      .then(data => {
-        console.log("데이터 획득")
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    fetch('/run-python')
+    .then(response => response.arrayBuffer())
+    .then(buffer => {
+      const decoder = new TextDecoder('utf-8');
+      const decodedString = decoder.decode(buffer);
+      const data = JSON.parse(decodedString);
+
+      console.log(JSON.stringify(data, null, 2))
+        
+    })
+
+    .catch(error => console.error('Error fetching data:', error));
   });
 
 });
