@@ -10,8 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const decodedString = decoder.decode(buffer);
       const data = JSON.parse(decodedString);
 
-      console.log(JSON.stringify(data, null, 2))
-        
+      itemList = JSON.parse(JSON.stringify(data, null, 2))
+      console.log(itemList)
+
+      main()
     })
 
     .catch(error => console.error('Error fetching data:', error));
@@ -31,3 +33,32 @@ document.body.appendChild(img);
 img.src = './itemimage_a-g/acacia_log.png'
 img.width = '50'
 img.style = "position:absolute; left:0px; top:0px;"
+
+
+function main(){
+
+  for (let i = 0; i < itemList.length; i++) {
+    console.log(itemList[i]);
+
+    const firstChar = itemList[i].toLowerCase();
+
+    if (firstChar >= 'a' && firstChar <= 'g') {
+      imagePath = "./itemimage_a-g/";
+    }
+    
+    else if (firstChar >= 'h' && firstChar <= 'z') {
+      imagePath = "./itemimage_h-z/";
+    }
+    
+    else {
+      console.error(); 
+      continue;
+    }
+    console.log(document.getElementById(`item-${i+1}`))
+    console.log(`${imagePath}${itemList[i]}.png`)
+    
+    image = document.getElementById(`item-${i+1}`)
+
+    image.style.backgroundImage = `url(${imagePath}${itemList[i]}.png)`
+  }
+}
