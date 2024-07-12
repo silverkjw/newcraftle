@@ -86,8 +86,8 @@ body
 
 #follow-img {
     position: absolute;
-    width: 50px; /* 원하는 이미지 크기로 설정 */
-    height: 50px; /* 원하는 이미지 크기로 설정 */
+    width: 75px; /* 원하는 이미지 크기로 설정 */
+    height: 75px; /* 원하는 이미지 크기로 설정 */
     pointer-events: none; /* 이미지가 클릭되지 않도록 설정 */
     transform: translate(-50%, -50%); /* 이미지의 중심이 커서를 따라오도록 설정 */
     display: none; /* 처음에는 이미지를 숨김 */
