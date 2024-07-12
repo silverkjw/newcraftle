@@ -6,7 +6,7 @@ var craftTable = [
   ["", "", ""]
 ];
 
-var handItem = "";
+var handItem = "zombie_head";
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -58,12 +58,12 @@ function hideImage() {
   followImg.style.display = 'none';
 }
 
-function changeImageSrc(newSrc) { //handItem을 통해 커서 이미지 변경
+function changeImageSrc() { //handItem을 통해 커서 이미지 변경
   const followImg = document.getElementById('follow-img');
   if (handItem == "") hideImage(); //없어요
 
   else {
-    followImg.src = newSrc //임시, handItem의 src로 수정 예정
+    followImg.src = makesrc(handItem)
     showImage()
   };
 }
@@ -73,11 +73,6 @@ function reset(){
 
   for (let i = 0; i < itemList.length; i++) {
     console.log(itemList[i]);
-
-    makesrc(itemList[i])
-
-    //console.log(document.getElementById(`item-${i+1}`))
-    //console.log(`${imagePath}${itemList[i]}.png`)
     
     image = document.getElementById(`item-${i+1}`)
 
@@ -86,8 +81,12 @@ function reset(){
   }
 }
 
+function main(){
+  changeImageSrc()
+}
+
 function makesrc(item){
-  const firstChar = itemList[i][0].toLowerCase();
+  const firstChar = item[0];
 
   if (firstChar >= 'a' && firstChar <= 'g') {
     imagePath = "./itemimage_a-g/";
