@@ -6,27 +6,11 @@ var craftTable = [
   ["7", "8", "9"]
 ];
 
+var handItem = "";
+
 document.addEventListener('DOMContentLoaded', () => {
 
-  main()
-
-  document.getElementById('item-5').addEventListener('click', () => {
-    fetch('/run-python')
-    .then(response => response.arrayBuffer())
-    .then(buffer => {
-      const decoder = new TextDecoder('utf-8');
-      const decodedString = decoder.decode(buffer);
-      const data = JSON.parse(decodedString);
-
-      itemList = JSON.parse(JSON.stringify(data, null, 2))
-      console.log(itemList)
-
-      reset()
-
-    })
-
-    .catch(error => console.error('Error fetching data:', error));
-  });
+  main();
 
   document.getElementById('reset').addEventListener('click', async () => {
 
@@ -74,9 +58,14 @@ function hideImage() {
   followImg.style.display = 'none';
 }
 
-function changeImageSrc(newSrc) {
+function changeImageSrc(newSrc) { //handItem을 통해 커서 이미지 변경
   const followImg = document.getElementById('follow-img');
-  followImg.src = newSrc;
+  if (handItem == "") hideImage(); //없어요
+
+  else {
+    followImg.src = newSrc //임시, handItem의 src로 수정 예정
+    showImage()
+  };
 }
 
 
@@ -112,10 +101,8 @@ function reset(){
 
 function main() {
 
-  changeImageSrc("./itemimage_a-g/acacia_planks.png")
-  showImage()
-  hideImage()
-  showImage()
+  changeImageSrc("./itemimage_a-g/acacia_log.png")
+
 
   return 0; //장식
 
