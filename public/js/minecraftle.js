@@ -106,15 +106,16 @@ function update(craftTable){
   var number = 1;
   for (var i = 0; i < 3; i++) {
     for (var j = 0; j < 3; j++) {
+
       cell = document.getElementById(`cell-${number}`)
+
+      if (craftTable[i][j]==""){
+        cell.style.backgroundImage = 'url("")'
+        continue
+      }
+
       cell.style.backgroundImage = `url(${makesrc(craftTable[i][j])})`
       number++;
     }
   }
-
-  for (let i = 0; i < 9; i++){
-    
-    
-  }
-  
 }
