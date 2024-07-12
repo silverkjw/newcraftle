@@ -67,7 +67,7 @@ function main(){
 
   for (let i = 0; i < itemList.length; i++) {
     console.log(itemList[i]);
-
+    
     const firstChar = itemList[i][0].toLowerCase();
 
     if (firstChar >= 'a' && firstChar <= 'g') {
