@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('item-6').addEventListener('click', async () => {
 
     filename = "makeitemlist.py";
-    params = [30];
+    params = [3];
 
     fetch('http://localhost:3000/run-python', {
       method: 'POST',
