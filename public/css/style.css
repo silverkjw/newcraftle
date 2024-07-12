@@ -84,21 +84,30 @@ body
     cursor: pointer;
 }
 
-#item-1 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
+#follow-img {
+    position: absolute;
+    width: 50px; /* 원하는 이미지 크기로 설정 */
+    height: 50px; /* 원하는 이미지 크기로 설정 */
+    pointer-events: none; /* 이미지가 클릭되지 않도록 설정 */
+    transform: translate(-50%, -50%); /* 이미지의 중심이 커서를 따라오도록 설정 */
+    display: none; /* 처음에는 이미지를 숨김 */
+}
+
+#item-1 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
 #item-2 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
-#item-3 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-4 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-5 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-6 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-7 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-8 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-9 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-10 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-11 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-12 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-13 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-14 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-15 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-16 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-17 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
-#item-18 { background-image: url('./itemimage_a-g/acacia_slab.png'); }
+#item-3 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-4 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-5 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-6 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-7 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-8 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-9 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-10 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-11 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-12 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-13 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-14 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-15 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-16 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-17 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
+#item-18 { background-image: url('../itemimage_a-g/acacia_slab.png'); }
