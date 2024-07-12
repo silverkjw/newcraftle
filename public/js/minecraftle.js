@@ -71,6 +71,7 @@ function main(){
 
     const firstChar = itemList[i].toLowerCase();
 
+
     if (firstChar >= 'a' && firstChar <= 'g') {
       imagePath = "./itemimage_a-g/";
     }
@@ -83,8 +84,9 @@ function main(){
       console.error(); 
       continue;
     }
-    console.log(document.getElementById(`item-${i+1}`))
-    console.log(`${imagePath}${itemList[i]}.png`)
+
+    //console.log(document.getElementById(`item-${i+1}`))
+    //console.log(`${imagePath}${itemList[i]}.png`)
     
     image = document.getElementById(`item-${i+1}`)
 
