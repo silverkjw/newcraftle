@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           console.log(itemList)
 
-          main()
+          reset()
         })
         .catch(error => console.error('Error fetching data:', error));
   });
