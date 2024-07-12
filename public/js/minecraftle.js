@@ -11,10 +11,35 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = JSON.parse(decodedString);
 
       console.log(JSON.stringify(data, null, 2))
-        
+      
     })
 
     .catch(error => console.error('Error fetching data:', error));
+  });
+
+  document.getElementById('item-6').addEventListener('click', async () => {
+
+    filename = "makeitemlist.py";
+    params = [30];
+
+    fetch('http://localhost:3000/run-python', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ filename, params })
+
+    })
+    .then(response => response.arrayBuffer())
+        .then(buffer => {
+          const decoder = new TextDecoder('utf-8');
+          const decodedString = decoder.decode(buffer);
+          const data = JSON.parse(decodedString);
+          
+          console.log(data)
+
+        })
+        .catch(error => console.error('Error fetching data:', error));
   });
 
 });

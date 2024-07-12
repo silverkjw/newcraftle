@@ -170,8 +170,9 @@ def firstItems(count:int): #제곱을 가중치로 해서 아이템을 count개 
 
     return list(selected_keys)
 
-if __name__ == "__main__" or True:
-
+if __name__ == "__main__":
+    
     # JSON 형식으로 리스트 출력
+
     print(json.dumps(firstItems(int(sys.argv[1]))))
     
