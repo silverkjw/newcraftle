@@ -3,14 +3,15 @@
 import os
 import json
 from tags import tagDict
+import sys
 
 recipeLocation = "./recipes/" #제작법 폴더
 recipeNameList = os.listdir(recipeLocation) #제작법 목록
 
-craftTable = \
-    [['cobblestone','cobblestone','cobblestone'],\
-     ['quartz','redstone','redstone'],\
-     ['cobblestone','cobblestone','cobblestone']]
+# craftTable = \
+#     [['cobblestone','cobblestone','cobblestone'],\
+#      ['quartz','redstone','redstone'],\
+#      ['cobblestone','cobblestone','cobblestone']]
 
 #      [['0,0','0,1','0,2'],\
 #      ['1,0','1,1','2,1'],\
@@ -89,7 +90,7 @@ def checkCraft(craftTable:list):
                                 if 'item' in k:
                                     goodSetDict[key].add(k['item'].replace("minecraft:","")) #싹다 집합에 추가
                                 else:
-                                    print(recipeName)
+                                    #print(recipeName)
                                     assert()
                         
                         elif 'tag' in json_data['key'][key]: #tag라면
@@ -164,7 +165,7 @@ def checkCraft(craftTable:list):
                                     break
 
                             else:
-                                print(recipeName) #오류
+                                #print(recipeName) #오류
                                 assert()
                         
                         if listsuccess is False: #필요한 재료 X
@@ -178,7 +179,7 @@ def checkCraft(craftTable:list):
                         for i in tagDict[ingredient['tag']]: #tag 리스트의 모든 것에 대해
                             if i in ingredientList: #제작법에 있는 아이템이라면
                                 listsuccess = True
-                                ingredientList.remove(i['item'].replace("minecraft:",""))
+                                ingredientList.remove(i)
                                 break
                         
                         if listsuccess is False: #필요한 재료 X
@@ -199,6 +200,12 @@ def checkCraft(craftTable:list):
             pass
     return False
 
-print(checkCraft(craftTable))
+if __name__ == "__main__":
+
+    # JSON 형식으로 리스트 출력
+
+    print(checkCraft(json.loads(sys.argv[1])),end="")
+    pass
+    
 
 

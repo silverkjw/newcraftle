@@ -3,11 +3,12 @@
 
 import json
 from tags import tagDict
+import sys
 
-guess = \
-    [['','stick',''],\
-     ['stick','charcoal','stick'],\
-     ['cherry_log','oak_log','mangrove_log']]
+# guess = \
+#     [['','stick',''],\
+#      ['stick','charcoal','stick'],\
+#      ['cherry_log','oak_log','mangrove_log']]
 
 def guessResult(guess:list, answerName:str):
     
@@ -165,4 +166,8 @@ def guessResult(guess:list, answerName:str):
     
     return result
 
-print(guessResult(guess, "campfire.json"))
+if __name__ == "__main__":
+    
+    # JSON 형식으로 리스트 출력
+
+    print(json.dumps(guessResult(list(sys.argv[1]),str(sys.argv[2]))))

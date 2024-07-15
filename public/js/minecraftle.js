@@ -7,6 +7,7 @@ var craftTable = [
 ];
 
 var handItem = "";
+var result = "";
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -236,6 +237,26 @@ function reset(){
 
 function main(){
   changeImageSrc()
+
+
+
+}
+
+function jsonRemove(input) {
+  // .json 확장자 제거
+  let result = input.replace('.json', '');
+
+  // 'from'이 포함된 경우 'from' 이후의 모든 내용을 제거
+
+  const fromIndex = result.indexOf('_from');
+  if (fromIndex !== -1) {
+    result = result.substring(0, fromIndex);
+  } 
+
+  result = result.replace(/"/g, '')
+  result = result.replace("\n","")
+
+  return result;
 }
 
 function makesrc(item){
@@ -259,6 +280,7 @@ function makesrc(item){
 function update(){
 
   var number = 0;
+  var resultHtml = document.getElementById(`result`)
 
   for (var i = 0; i < 3; i++) {
     for (var j = 0; j < 3; j++) {
@@ -276,4 +298,51 @@ function update(){
       
     }
   }
+
+  //서버에 craft.py 요청 보내기
+
+  filename = "craft.py";
+  params = [JSON.stringify(craftTable)];
+
+  fetch('http://localhost:3000/run-python', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ filename, params })
+
+  })
+  .then(response => response.arrayBuffer())
+      .then(buffer => {
+        const decoder = new TextDecoder('utf-8');
+        const decodedString = decoder.decode(buffer);
+        var data = JSON.parse(decodedString);
+
+        //data = data.replace(/[\r\n]/g, '');
+
+        console.log("crafted : "+data);
+        
+        if (data != "False") { //있는 제작법이라면
+          
+          
+          result = jsonRemove(data)
+
+          console.log(typeof(data),"type")
+
+          resultHtml.style.backgroundImage = `url(${makesrc(result)})`
+          //resultHtml.innerText = `url(${makesrc(result)})`
+
+          console.log(`url(${makesrc(result)})`)
+        }
+
+        else {
+          result = ""
+
+          resultHtml.style.backgroundImage = `url("")`
+
+        }
+
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
 }
