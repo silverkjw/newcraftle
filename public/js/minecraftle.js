@@ -102,7 +102,7 @@ function grabTable(number) {
 function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 사용을 끝냈다고 본다-
 
   if (handItem != "") { //손에 아이템이 있을 시
-    if (lastDownTime) {
+    if (lastDownTime && number == lastCell) {
         const currentTime = new Date();
         const timeDiff = currentTime - lastDownTime;
 
@@ -127,6 +127,7 @@ function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 �
 let isDragging = false;
 
 let lastDownTime = null;
+let lastCell = null;
 
 function handleMouseDown(number) {
   if (handItem != "") { //손에 든게 있다면
@@ -155,6 +156,7 @@ function handleMouseDown(number) {
     update()
     changeImageSrc()
 
+    lastCell = number 
     lastDownTime = new Date(); //시간측정 시작
   }
 
