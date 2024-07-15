@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   main();
 
+  document.getElementById("reset").addEventListener('click', function(){
+    parent = document.getElementById("clone")
+    parent.replaceChildren()
+    console.log("주제넘은")
+  })
+
   document.getElementById('erase').addEventListener('click', function (){
     craftTable = [
       ["", "", ""],
@@ -27,13 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
     filename = "makeitemlist.py";
     params = [18];
 
+
     fetch('http://localhost:3000/run-python', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ filename, params })
-
+      
     })
     .then(response => response.arrayBuffer())
         .then(buffer => {
@@ -49,10 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error fetching data:', error));
 
-    document.getElementById("result").addEventListener('click', function(){
-      saveRecipe()
-      console.log("뭉탱이")
-    })
+  document.getElementById("result").addEventListener('click', function(){
+    saveRecipe()
+    console.log("뭉탱이")
+  })
   });
 
   // item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
