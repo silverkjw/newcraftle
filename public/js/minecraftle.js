@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error fetching data:', error));
 
   document.getElementById("result").addEventListener('click', function(){
-    saveRecipe()
+    saveRecipe(craftTable)
     console.log("뭉탱이")
   })
   });
@@ -359,14 +359,31 @@ function update(){
 
 }
 
-function saveRecipe(){
+function saveRecipe(guess){
 
   reicpe = document.getElementById("recipe")
 
   clone = reicpe.cloneNode(true) //깊은복사
 
+  cloneCells = clone.children
+
+  var number = 0
+
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+
+      number++
+      cloneCells[number-1].style.backgroundColor = guess[i][j]
+      
+    }
+  }
+  
   cloneContainer = document.getElementById("clone") 
 
+
+
+
   cloneContainer.appendChild(clone) //컨테이너에 추가
+
 
 }
