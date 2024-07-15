@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error fetching data:', error));
 
-    document.getElementById("resultItem").addEventListener('click', function(){
+    document.getElementById("result").addEventListener('click', function(){
       saveRecipe()
       console.log("뭉탱이")
     })
