@@ -174,9 +174,10 @@ function handleMouseUp(event) {
 
 function dragCell(number) {
 
+
     console.log(number+"드래그 중")
 
-    if (handItem != "") { //손에 아이템이 있다면 
+    if (handItem != "" && craftTable[Math.floor(number/3)][number%3] == "") { //손에 아이템이 있고 빈칸을 드래그 중에 지나가면
       craftTable[Math.floor(number/3)][number%3] = handItem
       update()
     }
