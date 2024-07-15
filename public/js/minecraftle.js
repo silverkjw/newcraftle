@@ -6,13 +6,22 @@ var craftTable = [
   ["", "", ""]
 ];
 
-var handItem = "zombie_head";
+var handItem = "";
 
 document.addEventListener('DOMContentLoaded', () => {
 
   main();
 
-  document.getElementById('reset').addEventListener('click', async () => {
+  document.getElementById('erase').addEventListener('click', function (){
+    craftTable = [
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""]
+    ];
+    update()
+  }); //제작대 지우기
+
+  document.getElementById('reset').addEventListener('click', async () => { //새 게임
 
     filename = "makeitemlist.py";
     params = [18];
@@ -40,28 +49,137 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error fetching data:', error));
   });
 
-// item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
-for (let i = 1; i <= 18; i++) {
-  // 각 요소의 ID를 생성
-  let elementId = 'item-' + i;
-  
-  // 요소를 선택
-  let element = document.getElementById(elementId);
-  
-  // 요소가 존재하면 이벤트 핸들러를 추가
-  if (element) {
-      element.addEventListener('click', function() {
-          grabTable(i);
+  // item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
+  for (let i = 1; i <= 18; i++) {
+    // 각 요소의 ID를 생성
+    let elementId = 'item-' + i;
+    
+    // 요소를 선택
+    let element = document.getElementById(elementId);
+    
+    // 요소가 존재하면 이벤트 핸들러를 추가
+    if (element) {
+        element.addEventListener('click', function() {
+            grabTable(i-1);
+        });
+
+        element.addEventListener('mousedown', function() {
+          grabTable(i-1);
       });
+    }
+  }
+
+  // cell-1부터 cell-9까지의 요소에 이벤트 핸들러 추가
+  for (let i = 1; i <= 9; i++) {
+    // 각 요소의 ID를 생성
+    let elementId = 'cell-' + i;
+    
+    // 요소를 선택
+    let element = document.getElementById(elementId);
+    
+    // 요소가 존재하면 이벤트 핸들러를 추가
+    if (element) {
+      element.addEventListener('mousedown', function() {
+        handleMouseDown(i-1);
+      });
+      element.addEventListener('mouseup', function() {
+        clickCell(i-1);
+      });
+    }
+    
+  }
+
+  document.addEventListener('dragstart', function(event) { //드래그 원활하게 하기 위함
+      event.preventDefault();
+  });
+});
+
+function grabTable(number) {
+  handItem = itemList[number]
+  changeImageSrc()
+}
+ 
+function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 사용을 끝냈다고 본다-
+
+  if (handItem != "") { //손에 아이템이 있을 시
+    if (lastDownTime) {
+        const currentTime = new Date();
+        const timeDiff = currentTime - lastDownTime;
+
+        if (timeDiff < 250) return //250ms 미만의 짧은 입력일시 그냥 들고 있기
+    }
+
+    craftTable[Math.floor(number/3)][number%3] = handItem
+    update()
+
+    handItem = ""
+    changeImageSrc()
+  }
+
+  else if (craftTable[Math.floor(number/3)][number%3] != "") { //손에 아이템이 없고 제작대에는 있을 시
+    handItem = craftTable[Math.floor(number/3)][number%3]
+    craftTable[Math.floor(number/3)][number%3] = ""
+    update()
+    changeImageSrc()
   }
 }
 
-});
+let isDragging = false;
 
-  function grabTable(parameter) {
-    handItem = itemList[parameter-1]
-    changeImageSrc()
+let lastDownTime = null;
+
+function handleMouseDown(number) {
+  if (handItem != "") { //손에 든게 있다면
+    isDragging = true;
+
+    // cell-1부터 cell-9까지의 요소에 이벤트 핸들러 추가
+  for (let i = 1; i <= 9; i++) {
+    let elementId = 'cell-' + i;
+    
+    let element = document.getElementById(elementId);
+    
+    if (element) {
+      element.addEventListener('mousemove', function() {
+        handleMouseMove(i-1);
+      });
+    }
+    
   }
+    document.addEventListener('mouseup', handleMouseUp);
+  }
+
+  else if (craftTable[Math.floor(number/3)][number%3] != "") { //손에 아이템이 없고 제작대에는 있다면
+    //아이템 들기
+    handItem = craftTable[Math.floor(number/3)][number%3]
+    craftTable[Math.floor(number/3)][number%3] = ""
+    update()
+    changeImageSrc()
+
+    lastDownTime = new Date(); //시간측정 시작
+  }
+
+}
+
+function handleMouseMove(number) {
+    if (isDragging) dragCell(number)
+}
+
+function handleMouseUp(event) {
+    isDragging = false;
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+}
+
+function dragCell(number) {
+
+    console.log(number+"드래그 중")
+
+    if (handItem != "") { //손에 아이템이 있다면 
+      craftTable[Math.floor(number/3)][number%3] = handItem
+      update()
+    }
+}
+
 
 document.addEventListener('mousemove', function(event) {
   const followImg = document.getElementById('follow-img');
@@ -92,7 +210,17 @@ function changeImageSrc() { //handItem을 통해 커서 이미지 변경
 
 function reset(){
   handItem = ""
+
+  craftTable = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""]
+  ];
+  
+
   changeImageSrc()
+  update()
+
   for (let i = 0; i < itemList.length; i++) {
     console.log(itemList[i]);
     
@@ -125,11 +253,14 @@ function makesrc(item){
   return `${imagePath}${item}.png`
 }
 
-function update(craftTable){
+function update(){
 
-  var number = 1;
+  var number = 0;
+
   for (var i = 0; i < 3; i++) {
     for (var j = 0; j < 3; j++) {
+
+      number++;
 
       cell = document.getElementById(`cell-${number}`)
 
@@ -139,7 +270,7 @@ function update(craftTable){
       }
 
       cell.style.backgroundImage = `url(${makesrc(craftTable[i][j])})`
-      number++;
+      
     }
   }
 }
