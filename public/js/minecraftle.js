@@ -48,6 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
           reset()
         })
         .catch(error => console.error('Error fetching data:', error));
+
+    document.getElementById("resultItem").addEventListener('click', function(){
+      saveRecipe()
+      console.log("뭉탱이")
+    })
   });
 
   // item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
@@ -344,5 +349,17 @@ function update(){
 
       })
       .catch(error => console.error('Error fetching data:', error));
+
+}
+
+function saveRecipe(){
+
+  reicpe = document.getElementById("recipe")
+
+  clone = reicpe.cloneNode(true) //깊은복사
+
+  cloneContainer = document.getElementById("clone") 
+
+  cloneContainer.appendChild(clone) //컨테이너에 추가
 
 }
