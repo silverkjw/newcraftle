@@ -3,6 +3,7 @@ import os
 import numpy as np
 from tags import tagDict
 import sys
+import random
 
 # recipeLocation = "./recipes/" #제작법 폴더
 
@@ -146,9 +147,44 @@ import sys
 
 #print(len(itemCountDict))
 
+recipeLocation = "./recipes/" #제작법 폴더
 
+def needItems(recipeName):
+    with open(recipeLocation+recipeName,"r") as f: #json 파일 열기
+    
+        itemList = [] #필요한 아이템 목록
+        
+        json_data = json.load(f) #json 로드
+        
+        if json_data["type"] == "minecraft:crafting_shaped": #모양이 정해진 경우
+            for key in list(json_data['key'].keys()):
+                if type(json_data['key'][key]) == list: #만약 리스트라면
+                    itemList.append(random.choice(json_data['key'][key])['item']).replace("minecraft:","")
+                    
+                elif 'tag' in json_data['key'][key]: #tag라면
+                    itemList.append(random.choice(tagDict[json_data['key'][key]['tag']]).replace("minecraft:",""))
 
-def firstItems(count:int): #제곱을 가중치로 해서 아이템을 count개 선정
+                elif 'item' in json_data['key'][key]:
+                    itemList.append(json_data['key'][key]['item'].replace("minecraft:",""))
+
+        else:
+            for ingredient in json_data['ingredients']:
+
+                if type(ingredient) == list:
+                    itemList.append(random.choice(ingredient)['item'].replace("minecraft:",""))
+
+                elif 'tag' in ingredient:
+                    itemList.append(random.choice(tagDict[ingredient['tag']]).replace("minecraft:",""))
+
+                elif 'item' in ingredient:
+                    itemList.append(ingredient['item'].replace("minecraft:","")) 
+            pass
+
+        itemList = list(set(itemList))
+
+        return itemList
+
+def firstItems(count:int, recipeName:str): #제곱을 가중치로 해서 아이템을 count개 선정
 
     with open("./itemchance.json","r") as f: #json 파일 열기
         itemCountDict = json.load(f) #json 로드
@@ -168,11 +204,40 @@ def firstItems(count:int): #제곱을 가중치로 해서 아이템을 count개 
         import traceback
         print(traceback.format_exc())
 
-    return list(selected_keys)
+    allItemList = list(selected_keys)
+
+    needItemList = needItems(recipeName)
+        
+    return update_all_item_list(needItemList, allItemList)
+
+
+def update_all_item_list(needItemList, allItemList):
+    # needItemList에는 있지만 allItemList에 없는 아이템들을 찾습니다
+    missing_items = [item for item in needItemList if item not in allItemList]
+
+    # allItemList에서 임의의 아이템을 missing_items로 교체하여 업데이트합니다
+    for missing_item in missing_items:
+        # needItemList에 없는 allItemList의 아이템들을 후보로 선정합니다
+        replacement_candidates = [item for item in allItemList if item not in needItemList]
+        if not replacement_candidates:
+            raise ValueError("allItemList에서 교체할 수 있는 아이템이 없습니다.")
+        
+        # 교체할 아이템을 랜덤하게 선택합니다
+        item_to_replace = random.choice(replacement_candidates)
+        
+        # allItemList에서 아이템을 교체합니다
+        item_index = allItemList.index(item_to_replace)
+        allItemList[item_index] = missing_item
+    
+    # allItemList를 셔플합니다
+    random.shuffle(allItemList)
+    
+    # 셔플된 allItemList을 반환합니다
+    return allItemList
 
 if __name__ == "__main__":
     
     # JSON 형식으로 리스트 출력
 
-    print(json.dumps(firstItems(int(sys.argv[1]))))
-    
+    print(json.dumps(firstItems(int(sys.argv[1]),sys.argv[2])))
+    pass

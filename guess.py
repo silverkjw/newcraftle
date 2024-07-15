@@ -171,3 +171,4 @@ if __name__ == "__main__":
     # JSON 형식으로 리스트 출력
 
     print(json.dumps(guessResult(list(sys.argv[1]),str(sys.argv[2]))))
+    

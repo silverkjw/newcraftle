@@ -8,6 +8,7 @@ var craftTable = [
 
 var handItem = "";
 var result = "";
+var answer = "";
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -24,8 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('reset').addEventListener('click', async () => { //새 게임
 
+    answer = await generateAnswer()
+    console.log(answer)
+
     filename = "makeitemlist.py";
-    params = [18];
+    params = [18, answer];
 
     fetch('http://localhost:3000/run-python', {
       method: 'POST',
@@ -44,16 +48,21 @@ document.addEventListener('DOMContentLoaded', () => {
           itemList = JSON.parse(data)
 
           console.log(itemList)
-
+          
           reset()
+
         })
         .catch(error => console.error('Error fetching data:', error));
 
-    document.getElementById("result").addEventListener('click', function(){
-      saveRecipe()
-      console.log("뭉탱이")
-    })
   });
+
+  document.getElementById("result").addEventListener('click', function(){
+
+    //guess()
+
+    saveRecipe()
+    console.log("뭉탱이")
+  })
 
   // item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
   for (let i = 1; i <= 18; i++) {
@@ -181,8 +190,6 @@ function handleMouseUp(event) {
 function dragCell(number) {
 
 
-    console.log(number+"드래그 중")
-
     if (handItem != "" && craftTable[Math.floor(number/3)][number%3] == "") { //손에 아이템이 있고 빈칸을 드래그 중에 지나가면
       craftTable[Math.floor(number/3)][number%3] = handItem
       update()
@@ -217,21 +224,22 @@ function changeImageSrc() { //handItem을 통해 커서 이미지 변경
 }
 
 
-function reset(){
+async function reset(){
   handItem = ""
-
+ 
   craftTable = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""]
   ];
-  
 
   changeImageSrc()
   update()
 
+
+
   for (let i = 0; i < itemList.length; i++) {
-    console.log(itemList[i]);
+    //console.log(itemList[i]);
     
     image = document.getElementById(`item-${i+1}`)
 
@@ -325,7 +333,7 @@ function update(){
 
         //data = data.replace(/[\r\n]/g, '');
 
-        console.log("crafted : "+data);
+        //console.log("crafted : "+data);
         
         if (data != "False") { //있는 제작법이라면
           
@@ -349,6 +357,64 @@ function update(){
 
       })
       .catch(error => console.error('Error fetching data:', error));
+
+}
+
+async function generateAnswer() {
+  // 서버에 generateAnswer.py 요청 보내기
+  const filename = "generateAnswer.py";
+  const params = [];
+
+  try {
+    const response = await fetch('http://localhost:3000/run-python', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ filename, params })
+    });
+    
+    const buffer = await response.arrayBuffer();
+    const decoder = new TextDecoder('utf-8');
+    const decodedString = decoder.decode(buffer);
+    let data = JSON.parse(decodedString);
+    
+    data = data.replace(/[\r\n]/g, '');
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error; // 에러를 호출자에게 전달
+  }
+}
+
+function guess(){
+  
+    //서버에 guess.py 요청 보내기
+    filename = "guess.py";
+    params = [JSON.stringify(craftTable)];
+  
+    fetch('http://localhost:3000/run-python', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ filename, params })
+  
+    })
+
+    .then(response => response.arrayBuffer())
+        .then(buffer => {
+          const decoder = new TextDecoder('utf-8');
+          const decodedString = decoder.decode(buffer);
+          var data = JSON.parse(decodedString);
+  
+          //data = data.replace(/[\r\n]/g, '');
+  
+          console.log("guessed : "+data);
+  
+        })
+        .catch(error => console.error('Error fetching data:', error));
 
 }
 
