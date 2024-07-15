@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   main();
 
+  document.getElementById("reset").addEventListener('click', function(){
+    parent = document.getElementById("clone")
+    parent.replaceChildren()
+    console.log("주제넘은")
+  })
+
   document.getElementById('erase').addEventListener('click', function (){
     craftTable = [
       ["", "", ""],
@@ -30,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filename = "makeitemlist.py";
     params = [18, answer];
+    params = [18];
+
 
     fetch('http://localhost:3000/run-python', {
       method: 'POST',
@@ -37,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ filename, params })
-
+      
     })
     .then(response => response.arrayBuffer())
         .then(buffer => {
@@ -63,6 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
     saveRecipe()
     console.log("뭉탱이")
   })
+  document.getElementById("result").addEventListener('click', function(){
+    saveRecipe(craftTable)
+    console.log("뭉탱이")
+  })
+  });
 
   // item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
   for (let i = 1; i <= 18; i++) {
@@ -418,14 +431,31 @@ function guess(){
 
 }
 
-function saveRecipe(){
+function saveRecipe(guess){
 
   reicpe = document.getElementById("recipe")
 
   clone = reicpe.cloneNode(true) //깊은복사
 
+  cloneCells = clone.children
+
+  var number = 0
+
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+
+      number++
+      cloneCells[number-1].style.backgroundColor = guess[i][j]
+      
+    }
+  }
+  
   cloneContainer = document.getElementById("clone") 
 
+
+
+
   cloneContainer.appendChild(clone) //컨테이너에 추가
+
 
 }
