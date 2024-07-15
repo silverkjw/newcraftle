@@ -159,7 +159,7 @@ def needItems(recipeName):
         if json_data["type"] == "minecraft:crafting_shaped": #모양이 정해진 경우
             for key in list(json_data['key'].keys()):
                 if type(json_data['key'][key]) == list: #만약 리스트라면
-                    itemList.append(random.choice(json_data['key'][key])['item']).replace("minecraft:","")
+                    itemList.append(random.choice(json_data['key'][key])['item'].replace("minecraft:",""))
                     
                 elif 'tag' in json_data['key'][key]: #tag라면
                     itemList.append(random.choice(tagDict[json_data['key'][key]['tag']]).replace("minecraft:",""))

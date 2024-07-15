@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filename = "makeitemlist.py";
     params = [18, answer];
-    params = [18];
 
 
     fetch('http://localhost:3000/run-python', {
@@ -71,10 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
     saveRecipe()
     console.log("뭉탱이")
   })
+
   document.getElementById("result").addEventListener('click', function(){
     saveRecipe(craftTable)
     console.log("뭉탱이")
   })
+
   });
 
   // item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
@@ -120,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('dragstart', function(event) { //드래그 원활하게 하기 위함
       event.preventDefault();
   });
-});
 
 function grabTable(number) {
   handItem = itemList[number]
