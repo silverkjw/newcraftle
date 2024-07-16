@@ -1,10 +1,45 @@
 //작업예정
 
-var craftTable = [
+// 변화를 감지할 함수
+function handleChange(target, property, value) {
+  updateCraft()
+}
+// Proxy 핸들러 설정
+const handler = {
+  set(target, property, value) {
+    if (!isNaN(property)) {
+      debounceHandleChange(target, property, value);
+    }
+
+    // 새로운 배열이 설정되면 그 배열에도 Proxy를 적용
+    if (Array.isArray(value)) {
+      target[property] = new Proxy(value, handler);
+    } else {
+      target[property] = value;
+    }
+
+    return true;
+  }
+};
+
+// 배열에 Proxy 적용 함수
+function createProxyArray(arr) {
+  return new Proxy(arr.map(item => (Array.isArray(item) ? createProxyArray(item) : item)), handler);
+}
+
+// 초기 배열에 Proxy 적용
+let craftTable = createProxyArray([
   ["", "", ""],
   ["", "", ""],
   ["", "", ""]
-];
+]);
+
+// 디바운스 구현
+let debounceTimer;
+function debounceHandleChange(target, property, value, delay = 100) {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => handleChange(target, property, value), delay);
+}
 
 var handItem = "";
 var result = "";
@@ -160,11 +195,14 @@ function correctAnswer() { //정답 맞출시 작동
 
 function eraseTable() { //제작대, 아이템 지우기
 
-  craftTable = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""]
-  ];
+  craftTable = createProxyArray([
+  ["", "", ""],
+  ["", "", ""],
+  ["", "", ""]
+]);
+
+  craftTable[0][0] = "" //요소 변경으로 result 자동 업데이트
+
   update();
 
   handItem = "";
@@ -315,17 +353,8 @@ async function reset(){
   for (let i = 1; i <= 18; i++) {
     document.getElementById('item-' + i).style.backgroundColor = '';
   }
-
-  handItem = ""
  
-  craftTable = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""]
-  ];
-
-  changeImageSrc()
-  update()
+  eraseTable()
 
   for (let i = 0; i < itemList.length; i++) {
     //console.log(itemList[i]);
@@ -378,29 +407,13 @@ function makesrc(item){
   return `${imagePath}${item}.png`
 }
 
-function update(){
+function updateCraft() {
 
-  var number = 0;
+  console.log("업데이트됨")
+
+  //서버에 craft.py 요청 보내기 
+
   var resultHtml = document.getElementById(`result`)
-
-  for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
-
-      number++;
-
-      cell = document.getElementById(`cell-${number}`)
-
-      if (craftTable[i][j]==""){
-        cell.style.backgroundImage = 'url("")'
-        continue
-      }
-
-      cell.style.backgroundImage = `url(${makesrc(craftTable[i][j])})`
-      
-    }
-  }
-
-  //서버에 craft.py 요청 보내기
 
   filename = "craft.py";
   params = [JSON.stringify(craftTable)];
@@ -422,12 +435,11 @@ function update(){
         //data = data.replace(/[\r\n]/g, '');
 
         //console.log("crafted : "+data);
+        console.log(craftTable,"updated",data)
         
         if (data != "False") { //있는 제작법이라면
           
-          
           result = jsonRemove(data)
-
 
           resultHtml.style.backgroundImage = `url(${makesrc(result)})`
           //resultHtml.innerText = `url(${makesrc(result)})`
@@ -435,14 +447,35 @@ function update(){
 
         else {
           result = ""
-
           resultHtml.style.backgroundImage = `url("")`
-
         }
 
       })
       .catch(error => console.error('Error fetching data:', error));
+}
 
+function update(){
+
+  var number = 0;
+
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+
+      number++;
+
+      cell = document.getElementById(`cell-${number}`)
+
+      if (craftTable[i][j]==""){
+        cell.style.backgroundImage = 'url("")'
+        continue
+      }
+
+      cell.style.backgroundImage = `url(${makesrc(craftTable[i][j])})`
+      
+    }
+  }
+
+  //craftUpdate()
 }
 
 async function generateAnswer() {
