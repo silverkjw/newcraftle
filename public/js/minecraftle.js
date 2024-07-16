@@ -21,12 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   document.getElementById('erase').addEventListener('click', function (){
-    craftTable = [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""]
-    ];
-    update()
+    
+    eraseTable()
+
   }); //제작대 지우기
 
   document.getElementById('reset').addEventListener('click', async () => { //새 게임
@@ -63,18 +60,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   });
 
-  document.getElementById("result").addEventListener('click', function(){
+  document.getElementById("result").addEventListener('click', async function(){
+    if (result == "") return
 
-    //guess()
+    if (result == jsonRemove(answer)) { //정답
+      correctAnswer()
+    }
 
-    saveRecipe()
-    console.log("뭉탱이")
+    else { //오답
+      let guessColors = await guess()
+      saveRecipe(guessColors)
+      eraseTable()
+    }
+
+    //console.log("뭉탱이")
   })
 
-  document.getElementById("result").addEventListener('click', function(){
-    saveRecipe(craftTable)
-    console.log("뭉탱이")
-  })
+  // document.getElementById("result").addEventListener('click', function(){
+  //   saveRecipe(craftTable)
+  //   //console.log("뭉탱이")
+  // })
 
   });
 
@@ -121,6 +126,31 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('dragstart', function(event) { //드래그 원활하게 하기 위함
       event.preventDefault();
   });
+
+function correctAnswer() { //정답 맞출시 작동
+
+  console.log("정답")
+  for (let i = 1; i <= 9; i++) {
+    document.getElementById('cell-' + i).style.backgroundColor = 'green';
+  }
+
+  return
+}
+
+function eraseTable() { //제작대, 아이템 지우기
+
+  craftTable = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""]
+  ];
+  update();
+
+  handItem = "";
+  changeImageSrc();
+  
+  return
+}
 
 function grabTable(number) {
   handItem = itemList[number]
@@ -245,6 +275,10 @@ async function reset(){
     ["", "", ""],
     ["", "", ""]
   ];
+  
+  for (let i = 1; i <= 9; i++) {
+    document.getElementById('cell-' + i).style.backgroundColor = '';
+  }
 
   changeImageSrc()
   update()
@@ -401,33 +435,36 @@ async function generateAnswer() {
   }
 }
 
-function guess(){
+async function guess(){
   
     //서버에 guess.py 요청 보내기
-    filename = "guess.py";
-    params = [JSON.stringify(craftTable)];
+    const filename = "guess.py";
+    const params = [JSON.stringify(craftTable), answer];
   
-    fetch('http://localhost:3000/run-python', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ filename, params })
+    try {
+      const response = await fetch('http://localhost:3000/run-python', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ filename, params })
+      });
+      
+      const buffer = await response.arrayBuffer();
+      const decoder = new TextDecoder('utf-8');
+      const decodedString = decoder.decode(buffer);
+      var data = JSON.parse(decodedString);
+      
+      var newdata = JSON.parse(data)
+      //data = data.replace(/[\r\n]/g, '');
+      
+      console.log("guessed : "+newdata);
   
-    })
-
-    .then(response => response.arrayBuffer())
-        .then(buffer => {
-          const decoder = new TextDecoder('utf-8');
-          const decodedString = decoder.decode(buffer);
-          var data = JSON.parse(decodedString);
-  
-          //data = data.replace(/[\r\n]/g, '');
-  
-          console.log("guessed : "+data);
-  
-        })
-        .catch(error => console.error('Error fetching data:', error));
+      return newdata;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error; // 에러를 호출자에게 전달
+    }
 
 }
 
