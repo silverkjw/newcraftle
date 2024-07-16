@@ -295,7 +295,7 @@ async function reset(){
 
   changeImageSrc()
   update()
-  
+
   for (let i = 0; i < itemList.length; i++) {
     //console.log(itemList[i]);
     
@@ -307,9 +307,8 @@ async function reset(){
 }
 
 function main(){
+  
   changeImageSrc()
-
-
 
 }
 
