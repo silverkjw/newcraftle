@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 요소가 존재하면 이벤트 핸들러를 추가
     if (element) {
         element.addEventListener('click', function() {
-            grabTable(i-1);
+            //grabTable(i-1);
         });
 
         element.addEventListener('mousedown', function() {
@@ -165,7 +165,9 @@ function eraseTable() { //제작대, 아이템 지우기
 }
 
 function grabTable(number) {
-  handItem = itemList[number]
+  if (handItem == itemList[number]) handItem = ""
+
+  else handItem = itemList[number]
   changeImageSrc()
 }
  
