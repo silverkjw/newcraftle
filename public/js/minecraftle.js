@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById("reset").addEventListener('click', function(){
     parent = document.getElementById("clone")
     parent.replaceChildren()
-    console.log("주제넘은")
   })
 
   document.getElementById('erase').addEventListener('click', function (){
@@ -415,12 +414,9 @@ function update(){
           
           result = jsonRemove(data)
 
-          console.log(typeof(data),"type")
 
           resultHtml.style.backgroundImage = `url(${makesrc(result)})`
           //resultHtml.innerText = `url(${makesrc(result)})`
-
-          console.log(`url(${makesrc(result)})`)
         }
 
         else {
@@ -485,8 +481,6 @@ async function guess(){
       
       var newdata = JSON.parse(data)
       //data = data.replace(/[\r\n]/g, '');
-      
-      console.log("guessed : "+newdata);
   
       return newdata;
     } catch (error) {
@@ -514,8 +508,6 @@ function saveRecipe(guess){
       cloneCells[number-1].style.backgroundColor = guess[i][j]
       
       if (craftTable[i][j] !== "") {
-
-        console.log("색",i,j,guess[i][j])
 
         if (guess[i][j] == "green"){
           let block = document.getElementById(`item-${itemList.indexOf(craftTable[i][j])+1}`)
