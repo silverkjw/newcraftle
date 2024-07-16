@@ -239,12 +239,24 @@ function dragCell(number) {
     }
 }
 
+let mouseX = 0;
+let mouseY = 0;
 
 document.addEventListener('mousemove', function(event) {
-  const followImg = document.getElementById('follow-img');
-  followImg.style.left = `${event.clientX}px`;
-  followImg.style.top = `${event.clientY}px`;
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+  updatePosition();
 });
+
+document.addEventListener('scroll', function() {
+  updatePosition();
+});
+
+function updatePosition() {
+  const followImg = document.getElementById('follow-img');
+  followImg.style.left = `${mouseX+window.scrollX}px`;
+  followImg.style.top = `${mouseY+window.scrollY}px`;
+}
 
 function showImage() {
   const followImg = document.getElementById('follow-img');
@@ -268,6 +280,11 @@ function changeImageSrc() { //handItem을 통해 커서 이미지 변경
 
 
 async function reset(){
+
+  for (let i = 1; i <= 9; i++) {
+    document.getElementById('cell-' + i).style.backgroundColor = '';
+  }
+
   handItem = ""
  
   craftTable = [
@@ -275,16 +292,10 @@ async function reset(){
     ["", "", ""],
     ["", "", ""]
   ];
-  
-  for (let i = 1; i <= 9; i++) {
-    document.getElementById('cell-' + i).style.backgroundColor = '';
-  }
 
   changeImageSrc()
   update()
-
-
-
+  
   for (let i = 0; i < itemList.length; i++) {
     //console.log(itemList[i]);
     
