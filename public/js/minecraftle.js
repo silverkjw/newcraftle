@@ -116,8 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
       element.addEventListener('mousedown', function() {
         handleMouseDown(i-1);
       });
+
       element.addEventListener('mouseup', function() {
-        clickCell(i-1);
+        if (lastClickedCell == i-1)
+          clickCell(i-1);
+
+        else {
+          handItem = "";
+          changeImageSrc()
+        }
+
+        lastClickedCell = null
+
       });
     }
     
@@ -196,14 +206,18 @@ function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 �
 }
 
 let isDragging = false;
+let lastClickedCell = null
 
 let lastDownTime = null;
 let lastCell = null;
 
 function handleMouseDown(number) {
+
+  lastClickedCell = number
+  
   if (handItem != "") { //손에 든게 있다면
     isDragging = true;
-
+  
     // cell-1부터 cell-9까지의 요소에 이벤트 핸들러 추가
   for (let i = 1; i <= 9; i++) {
     let elementId = 'cell-' + i;
