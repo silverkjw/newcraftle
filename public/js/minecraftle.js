@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     else { //오답
       let guessColors = await guess()
       saveRecipe(guessColors)
+
       eraseTable()
     }
 
@@ -133,6 +134,17 @@ function correctAnswer() { //정답 맞출시 작동
   for (let i = 1; i <= 9; i++) {
     document.getElementById('cell-' + i).style.backgroundColor = 'green';
   }
+
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+      if (craftTable[i][j] !== "") {// 아이템이 있다면
+        let block = document.getElementById(`item-${itemList.indexOf(craftTable[i][j])+1}`)
+        block.style.backgroundColor = 'green' //초록으로
+      }
+    }
+  }
+  
+  
 
   return
 }
@@ -283,6 +295,10 @@ async function reset(){
 
   for (let i = 1; i <= 9; i++) {
     document.getElementById('cell-' + i).style.backgroundColor = '';
+  }
+
+  for (let i = 1; i <= 18; i++) {
+    document.getElementById('item-' + i).style.backgroundColor = '';
   }
 
   handItem = ""
@@ -484,6 +500,7 @@ function saveRecipe(guess){
 
   clone = reicpe.cloneNode(true) //깊은복사
 
+
   cloneCells = clone.children
 
   var number = 0
@@ -493,6 +510,31 @@ function saveRecipe(guess){
 
       number++
       cloneCells[number-1].style.backgroundColor = guess[i][j]
+      
+      if (craftTable[i][j] !== "") {
+
+        console.log("색",i,j,guess[i][j])
+
+        if (guess[i][j] == "green"){
+          let block = document.getElementById(`item-${itemList.indexOf(craftTable[i][j])+1}`)
+          block.style.backgroundColor = 'green'
+        }
+
+        else if(guess[i][j] == "yellow"){
+          let block = document.getElementById(`item-${itemList.indexOf(craftTable[i][j])+1}`)
+          if (block.style.backgroundColor !== 'green')
+            block.style.backgroundColor = 'yellow'
+        }
+
+        else if(guess[i][j] == "gray"){
+          let block = document.getElementById(`item-${itemList.indexOf(craftTable[i][j])+1}`)
+
+          if (block.style.backgroundColor == '')
+            block.style.backgroundColor = 'gray'
+        }
+
+      }
+
       
     }
   }
