@@ -218,13 +218,9 @@ function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 �
         lastCell = null
     }
 
-    console.log(handItem, " X ",craftTable[Math.floor(number/3)][number%3])
-
     temp = handItem
     handItem = craftTable[Math.floor(number/3)][number%3]
     craftTable[Math.floor(number/3)][number%3] = temp
-
-    console.log(handItem, " | ",craftTable[Math.floor(number/3)][number%3])
 
     update()
     changeImageSrc()
