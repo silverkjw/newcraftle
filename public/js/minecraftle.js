@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       element.addEventListener('mouseup', function(event) {
+
         if (event.button === 0) {
 
           if (lastClickedCell == i-1)
@@ -212,12 +213,20 @@ function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 �
         const timeDiff = currentTime - lastDownTime;
 
         if (timeDiff < 250) return //250ms 미만의 짧은 입력일시 그냥 들고 있기
+
+        lastDownTime = null
+        lastCell = null
     }
 
-    craftTable[Math.floor(number/3)][number%3] = handItem
-    update()
+    console.log(handItem, " X ",craftTable[Math.floor(number/3)][number%3])
 
-    handItem = ""
+    temp = handItem
+    handItem = craftTable[Math.floor(number/3)][number%3]
+    craftTable[Math.floor(number/3)][number%3] = temp
+
+    console.log(handItem, " | ",craftTable[Math.floor(number/3)][number%3])
+
+    update()
     changeImageSrc()
   }
 
@@ -228,6 +237,8 @@ function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 �
     changeImageSrc()
   }
 }
+
+dragTimer = null
 
 function putDown(number) {
 
@@ -241,24 +252,40 @@ function putDown(number) {
   }
 
   if (handItem != "") { //손에 든게 있다면
-    isDragging = true;
-  }
+    // 25ms 후에 isDragging을 true로 설정
+    dragTimer = setTimeout(() => {
+      isDragging = true;
+    }, 25);
 
   // cell-1부터 cell-9까지의 요소에 이벤트 핸들러 추가
   for (let i = 1; i <= 9; i++) {
     let elementId = 'cell-' + i;
-    
     let element = document.getElementById(elementId);
     
     if (element) {
-      element.addEventListener('mousemove', function() {
-        handleMouseMove(i-1);
-      });
-    }
-    
-  }
-    document.addEventListener('mouseup', handleMouseUp);
+      // 핸들러 생성
+      let handler = createMouseMoveHandler(i - 1);
 
+      // 핸들러 추가
+      element.addEventListener('mousemove', handler);
+
+      // Map에 핸들러 저장
+      handlers.set(element, handler);
+    }
+  }
+
+  document.addEventListener('mouseup', handleMouseUp);
+
+}
+
+// 핸들러를 저장할 Map
+const handlers = new Map();
+
+// 핸들러를 생성하는 함수
+function createMouseMoveHandler(index) {
+  return function(event) {
+    handleMouseMove(index);
+  };
 }
 
 let isDragging = false;
@@ -272,21 +299,28 @@ function handleMouseDown(number) {
   lastClickedCell = number
   
   if (handItem != "") { //손에 든게 있다면
-    isDragging = true;
+
+    // 25ms 후에 isDragging을 true로 설정
+    dragTimer = setTimeout(() => {
+      isDragging = true;
+    }, 25);
   
     // cell-1부터 cell-9까지의 요소에 이벤트 핸들러 추가
-  for (let i = 1; i <= 9; i++) {
-    let elementId = 'cell-' + i;
-    
-    let element = document.getElementById(elementId);
-    
-    if (element) {
-      element.addEventListener('mousemove', function() {
-        handleMouseMove(i-1);
-      });
+    for (let i = 1; i <= 9; i++) {
+      let elementId = 'cell-' + i;
+      let element = document.getElementById(elementId);
+      
+      if (element) {
+        // 핸들러 생성
+        let handler = createMouseMoveHandler(i - 1);
+
+        // 핸들러 추가
+        element.addEventListener('mousemove', handler);
+
+        // Map에 핸들러 저장
+        handlers.set(element, handler);
+      }
     }
-    
-  }
     document.addEventListener('mouseup', handleMouseUp);
   }
 
@@ -303,18 +337,41 @@ function handleMouseDown(number) {
 
 }
 
+
+
 function handleMouseMove(number) {
-    if (isDragging) dragCell(number)
+  if (isDragging) dragCell(number);
 }
 
 function handleMouseUp(event) {
-    isDragging = false;
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+
+  // 타이머를 취소하고 isDragging을 false로 설정
+  clearTimeout(dragTimer);
+  isDragging = false;
+
+  // cell-1부터 cell-9까지의 요소에서 이벤트 핸들러 제거
+
+  for (let i = 1; i <= 9; i++) {
+    let elementId = 'cell-' + i;
+    let element = document.getElementById(elementId);
+    
+    if (element) {
+      // Map에서 핸들러 가져오기
+      let handler = handlers.get(element);
+
+      // 핸들러 제거
+      if (handler) {
+        element.removeEventListener('mousemove', handler);
+
+        // Map에서 핸들러 삭제
+        handlers.delete(element);
+      }
+    }
+  }
+  document.removeEventListener('mouseup', handleMouseUp);
 }
 
 function dragCell(number) {
-
 
     if (handItem != "" && craftTable[Math.floor(number/3)][number%3] == "") { //손에 아이템이 있고 빈칸을 드래그 중에 지나가면
       craftTable[Math.floor(number/3)][number%3] = handItem
