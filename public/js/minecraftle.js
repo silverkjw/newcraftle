@@ -401,7 +401,7 @@ function makesrc(item){
 
 function updateCraft() {
 
-  console.log("업데이트됨")
+  //console.log("업데이트됨")
 
   //서버에 craft.py 요청 보내기 
 
