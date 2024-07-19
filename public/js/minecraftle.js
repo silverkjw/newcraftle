@@ -47,35 +47,40 @@ var answer = "";
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  document.getElementById("reset").addEventListener('click', function(){
-    parent = document.getElementById("clone")
-    parent.replaceChildren()
+  document.getElementById("reset").addEventListener('click', function(event){
+    if (event.button === 0) {
+      parent = document.getElementById("clone")
+      parent.replaceChildren()
+    }
   })
 
-  document.getElementById('erase').addEventListener('click', function (){
-    
-    eraseTable()
+  document.getElementById('erase').addEventListener('click', function (event){
+    if (event.button === 0) {
+      eraseTable()
+    }
 
   }); //제작대 지우기
 
-  document.getElementById('reset').addEventListener('click', async () => { //새 게임
-
-    startNewGame()
-
+  document.getElementById('reset').addEventListener('click', async (event) => { //새 게임
+    if (event.button === 0) {
+      startNewGame()
+    }
   });
 
-  document.getElementById("result").addEventListener('click', async function(){
-    if (result == "") return
+  document.getElementById("result").addEventListener('click', async function(event){
+    if (event.button === 0) {
+      if (result == "") return
 
-    if (result == jsonRemove(answer)) { //정답
-      correctAnswer()
-    }
+      if (result == jsonRemove(answer)) { //정답
+        correctAnswer()
+      }
 
-    else { //오답
-      let guessColors = await guess()
-      saveRecipe(guessColors)
+      else { //오답
+        let guessColors = await guess()
+        saveRecipe(guessColors)
 
-      eraseTable()
+        eraseTable()
+      }
     }
 
   })
@@ -90,12 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 요소가 존재하면 이벤트 핸들러를 추가
     if (element) {
-        element.addEventListener('click', function() {
-            //grabTable(i-1);
-        });
 
-        element.addEventListener('mousedown', function() {
+      element.addEventListener('mousedown', function(event) {
+
+        if (event.button === 0 || event.button === 2) {
           grabTable(i-1);
+        }
+
       });
     }
   }
@@ -110,31 +116,44 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 요소가 존재하면 이벤트 핸들러를 추가
     if (element) {
-      element.addEventListener('mousedown', function() {
-        handleMouseDown(i-1);
-      });
-
-      element.addEventListener('mouseup', function() {
-        if (lastClickedCell == i-1)
-          clickCell(i-1);
-
-        else {
-          handItem = "";
-          changeImageSrc()
+      element.addEventListener('mousedown', function(event) {
+        if (event.button === 0) {
+          handleMouseDown(i-1);
         }
 
-        lastClickedCell = null
+        if (event.button === 2) {
+          putDown(i-1);
+        }
+
+      });
+
+      element.addEventListener('mouseup', function(event) {
+        if (event.button === 0) {
+
+          if (lastClickedCell == i-1)
+            clickCell(i-1);
+
+          else {
+            handItem = "";
+            changeImageSrc()
+          }
+
+          lastClickedCell = null
+
+        }
 
       });
     }
 
-    
   }
 
   document.addEventListener('dragstart', function(event) { //드래그 원활하게 하기 위함
-      event.preventDefault();
+    event.preventDefault();
   });
-
+  document.addEventListener('contextmenu', function(event) { //우클릭 방지
+    event.preventDefault(); 
+  });
+  
   main()
 
 });
@@ -208,6 +227,38 @@ function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 �
     update()
     changeImageSrc()
   }
+}
+
+function putDown(number) {
+
+  if (handItem !== "" && craftTable[Math.floor(number/3)][number%3] === "") {
+    craftTable[Math.floor(number/3)][number%3] = handItem
+    update()
+  }
+  else if (handItem === "" && craftTable[Math.floor(number/3)][number%3] !== "") {
+    handItem = craftTable[Math.floor(number/3)][number%3]
+    changeImageSrc()
+  }
+
+  if (handItem != "") { //손에 든게 있다면
+    isDragging = true;
+  }
+
+  // cell-1부터 cell-9까지의 요소에 이벤트 핸들러 추가
+  for (let i = 1; i <= 9; i++) {
+    let elementId = 'cell-' + i;
+    
+    let element = document.getElementById(elementId);
+    
+    if (element) {
+      element.addEventListener('mousemove', function() {
+        handleMouseMove(i-1);
+      });
+    }
+    
+  }
+    document.addEventListener('mouseup', handleMouseUp);
+
 }
 
 let isDragging = false;
