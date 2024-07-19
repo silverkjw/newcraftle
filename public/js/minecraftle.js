@@ -256,6 +256,7 @@ function putDown(number) {
     dragTimer = setTimeout(() => {
       isDragging = true;
     }, 25);
+  }
 
   // cell-1부터 cell-9까지의 요소에 이벤트 핸들러 추가
   for (let i = 1; i <= 9; i++) {
