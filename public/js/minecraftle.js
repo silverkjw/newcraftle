@@ -47,8 +47,6 @@ var answer = "";
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  main();
-
   document.getElementById("reset").addEventListener('click', function(){
     parent = document.getElementById("clone")
     parent.replaceChildren()
@@ -62,35 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('reset').addEventListener('click', async () => { //새 게임
 
-    answer = await generateAnswer()
-    console.log(answer)
-
-    filename = "makeitemlist.py";
-    params = [18, answer];
-
-
-    fetch('http://localhost:3000/run-python', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ filename, params })
-      
-    })
-    .then(response => response.arrayBuffer())
-        .then(buffer => {
-          const decoder = new TextDecoder('utf-8');
-          const decodedString = decoder.decode(buffer);
-          const data = JSON.parse(decodedString);
-          
-          itemList = JSON.parse(data)
-
-          console.log(itemList)
-          
-          reset()
-
-        })
-        .catch(error => console.error('Error fetching data:', error));
+    startNewGame()
 
   });
 
@@ -108,15 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       eraseTable()
     }
 
-    //console.log("뭉탱이")
   })
-
-  // document.getElementById("result").addEventListener('click', function(){
-  //   saveRecipe(craftTable)
-  //   //console.log("뭉탱이")
-  // })
-
-  });
 
   // item-1부터 item-18까지의 요소에 이벤트 핸들러 추가
   for (let i = 1; i <= 18; i++) {
@@ -165,12 +127,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       });
     }
+
     
   }
 
   document.addEventListener('dragstart', function(event) { //드래그 원활하게 하기 위함
       event.preventDefault();
   });
+
+  main()
+
+});
 
 function correctAnswer() { //정답 맞출시 작동
 
@@ -343,26 +310,51 @@ function changeImageSrc() { //handItem을 통해 커서 이미지 변경
   };
 }
 
+async function startNewGame() {
+  answer = await generateAnswer();
+  console.log(answer);
 
-async function reset(){
+  const filename = "makeitemlist.py";
+  const params = [18, answer];
 
-  for (let i = 1; i <= 9; i++) {
-    document.getElementById('cell-' + i).style.backgroundColor = '';
-  }
+  try {
+      const response = await fetch('http://localhost:3000/run-python', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ filename, params })
+      });
 
-  for (let i = 1; i <= 18; i++) {
-    document.getElementById('item-' + i).style.backgroundColor = '';
-  }
- 
-  eraseTable()
+      const buffer = await response.arrayBuffer();
+      const decoder = new TextDecoder('utf-8');
+      const decodedString = decoder.decode(buffer);
+      const data = JSON.parse(decodedString);
 
-  for (let i = 0; i < itemList.length; i++) {
-    //console.log(itemList[i]);
+      itemList = JSON.parse(data);
+
+      console.log(itemList);
+
+      for (let i = 1; i <= 9; i++) {
+        document.getElementById('cell-' + i).style.backgroundColor = '';
+      }
     
-    image = document.getElementById(`item-${i+1}`)
-
-    image.style.backgroundImage = `url(${makesrc(itemList[i])})`
-
+      for (let i = 1; i <= 18; i++) {
+        document.getElementById('item-' + i).style.backgroundColor = '';
+      }
+     
+      eraseTable()
+    
+      for (let i = 0; i < itemList.length; i++) {
+        //console.log(itemList[i]);
+        
+        image = document.getElementById(`item-${i+1}`)
+    
+        image.style.backgroundImage = `url(${makesrc(itemList[i])})`
+    
+      }
+  } catch (error) {
+      console.error('Error fetching data:', error);
   }
 }
 
@@ -435,7 +427,7 @@ function updateCraft() {
         //data = data.replace(/[\r\n]/g, '');
 
         //console.log("crafted : "+data);
-        console.log(craftTable,"updated",data)
+        //console.log(craftTable,"updated",data)
         
         if (data != "False") { //있는 제작법이라면
           
