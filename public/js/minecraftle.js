@@ -218,9 +218,8 @@ function clickCell(number) { //cell 위에서 마우스를 뗄 시, 아이템 �
         lastCell = null
     }
 
-    temp = handItem
-    handItem = craftTable[Math.floor(number/3)][number%3]
-    craftTable[Math.floor(number/3)][number%3] = temp
+    craftTable[Math.floor(number/3)][number%3] = handItem
+    handItem = ""
 
     update()
     changeImageSrc()
@@ -245,6 +244,15 @@ function putDown(number) {
   else if (handItem === "" && craftTable[Math.floor(number/3)][number%3] !== "") {
     handItem = craftTable[Math.floor(number/3)][number%3]
     changeImageSrc()
+  }
+  else if (handItem !== "")
+  {
+    temp = handItem
+    handItem = craftTable[Math.floor(number/3)][number%3]
+    craftTable[Math.floor(number/3)][number%3] = temp
+
+    changeImageSrc()
+    update()
   }
 
   if (handItem != "") { //손에 든게 있다면
