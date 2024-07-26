@@ -425,6 +425,7 @@ function changeImageSrc() { //handItem을 통해 커서 이미지 변경
 
 async function startNewGame() {
   answer = await generateAnswer();
+  //answer = "hay_block" + ".json"
   console.log(answer);
 
   const filename = "makeitemlist.py";

@@ -143,7 +143,7 @@ def guessResult(guess:list, answerName:str):
 
                 for y, row in enumerate(guess):
                     for x, guessItem in enumerate(row): 
-                        if guessItem in ingredientSet:
+                        if guessItem in ingredientSet and result[y][x] != 'green':
                             result[y][x] = 'green'
                             ingredientSuccess = True
                             break
