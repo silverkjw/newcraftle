@@ -77,6 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       else { //오답
         let guessColors = await guess()
+
+        if (guessColors === false) return
+
         saveRecipe(guessColors)
 
         eraseTable()
@@ -613,10 +616,17 @@ async function generateAnswer() {
 }
 
 async function guess(){
-  
+
     //서버에 guess.py 요청 보내기
     const filename = "guess.py";
+
+    strtable = JSON.stringify(craftTable)
+
+    if (strtable === '[["","",""],["","",""],["","",""]]') return false
+
     const params = [JSON.stringify(craftTable), answer];
+
+     
   
     try {
       const response = await fetch('http://localhost:3000/run-python', {
